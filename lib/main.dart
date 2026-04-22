@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/hello_world_screen.dart';
+import 'screens/main_layout.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,11 +11,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Week 1 Demo',
+      title: 'Flutter Project',
       theme: ThemeData(
+        useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const HelloWorldScreen(),
+      home: const MainLayout(),
     );
   }
 }
