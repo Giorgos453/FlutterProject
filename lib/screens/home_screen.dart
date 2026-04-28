@@ -5,14 +5,10 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.home, size: 80),
-          SizedBox(height: 16),
-          Text('Home Screen', style: TextStyle(fontSize: 24)),
-        ],
+    return Scaffold(
+      appBar: AppBar(title: const Text('SolBuddy Madrid')),
+      body: const Center(
+        child: Text('Sol lives here ☀️ — coming soon'),
       ),
     );
   }

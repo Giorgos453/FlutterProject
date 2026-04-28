@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
-import 'screens/main_layout.dart';
+import 'core/theme.dart';
+import 'screens/main_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const SolBuddyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class SolBuddyApp extends StatelessWidget {
+  const SolBuddyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Project',
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MainLayout(),
+      title: 'SolBuddy Madrid',
+      theme: AppTheme.theme,
+      home: const MainScreen(),
     );
   }
 }
