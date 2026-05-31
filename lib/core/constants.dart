@@ -1,3 +1,5 @@
+import '../models/district.dart';
+
 /// Central app constants — no magic numbers elsewhere.
 class XpReward {
   const XpReward._();
@@ -59,6 +61,18 @@ int tempPenalty(double temp) {
   }
   return TempDisplayPenalty.comfortable;
 }
+
+/// Madrid districts with approximate centroid coordinates.
+const List<District> madridDistricts = [
+  District(name: 'Centro', lat: 40.4156, lng: -3.7038),
+  District(name: 'Salamanca', lat: 40.4300, lng: -3.6780),
+  District(name: 'Chamberí', lat: 40.4350, lng: -3.7030),
+  District(name: 'Retiro', lat: 40.4080, lng: -3.6770),
+  District(name: 'Arganzuela', lat: 40.3950, lng: -3.6950),
+  District(name: 'Chamartín', lat: 40.4600, lng: -3.6770),
+  District(name: 'Tetuán', lat: 40.4600, lng: -3.7000),
+  District(name: 'Latina', lat: 40.4020, lng: -3.7400),
+];
 
 enum CoolSpotType { fountain, shade, acBuilding, park }
 

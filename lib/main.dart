@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'core/theme.dart';
+import 'providers/map_provider.dart';
 import 'providers/user_provider.dart';
 import 'providers/weather_provider.dart';
 import 'screens/main_screen.dart';
+import 'services/location_service.dart';
 import 'services/weather_service.dart';
 
 void main() {
@@ -22,6 +24,12 @@ class SolBuddyApp extends StatelessWidget {
           create: (_) => WeatherProvider(const WeatherService()),
         ),
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(
+          create: (_) => MapProvider(
+            weatherService: const WeatherService(),
+            locationService: const LocationService(),
+          ),
+        ),
       ],
       child: MaterialApp(
         title: 'SolBuddy Madrid',
