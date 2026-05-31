@@ -20,6 +20,7 @@ class XpPenalty {
 class TemperatureThreshold {
   const TemperatureThreshold._();
 
+  static const double warmThreshold = 28;
   static const double hotThreshold = 34;
   static const double extremeThreshold = 38;
 }
