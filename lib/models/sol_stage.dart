@@ -16,4 +16,22 @@ enum SolStage {
     if (value >= StageThreshold.hot) return SolStage.hot;
     return SolStage.melting;
   }
+
+  /// XP threshold to enter this stage.
+  int get threshold => switch (this) {
+        SolStage.melting => StageThreshold.melting,
+        SolStage.hot => StageThreshold.hot,
+        SolStage.warm => StageThreshold.warm,
+        SolStage.cool => StageThreshold.cool,
+        SolStage.radiant => StageThreshold.radiant,
+      };
+
+  /// The next higher stage, or `null` for [radiant].
+  SolStage? get next => switch (this) {
+        SolStage.melting => SolStage.hot,
+        SolStage.hot => SolStage.warm,
+        SolStage.warm => SolStage.cool,
+        SolStage.cool => SolStage.radiant,
+        SolStage.radiant => null,
+      };
 }

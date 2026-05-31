@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/user_provider.dart';
 import '../providers/weather_provider.dart';
+import '../widgets/sol_avatar.dart';
+import '../widgets/stat_card.dart';
+import '../widgets/xp_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,45 +27,115 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('SolBuddy Madrid')),
-      body: Center(
-        child: Column(
+      body: Consumer2<UserProvider, WeatherProvider>(
+        builder: (context, userProv, weatherProv, _) {
+          final user = userProv.user;
+          final temp = weatherProv.data?.temperature;
+          final stage = temp != null ? user.stageFor(temp) : user.solStage;
+          final effectiveXp =
+              temp != null ? user.effectiveStateValue(temp) : user.xp;
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: Column(
+              children: [
+                SolAvatar(stage: stage, size: 160),
+                const SizedBox(height: 12),
+                Text(
+                  stage.name.toUpperCase(),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: XpBar(xp: effectiveXp, stage: stage),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: StatCard(
+                        icon: Icons.local_fire_department,
+                        label: 'Streak',
+                        value: '${user.currentStreak}',
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: StatCard(
+                        icon: Icons.place,
+                        label: 'Cool Spots',
+                        value: '${user.visitedSpotIds.length}',
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: StatCard(
+                        icon: Icons.quiz,
+                        label: 'Quizzes',
+                        value: '${user.quizzesPlayed}',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                _buildWeatherSection(weatherProv),
+                const SizedBox(height: 16),
+                // TODO: remove (debug)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FilledButton.tonal(
+                      onPressed: () => userProv.addXp(10),
+                      child: const Text('+10 XP'),
+                    ),
+                    const SizedBox(width: 12),
+                    FilledButton.tonal(
+                      onPressed: () => userProv.addXp(-10),
+                      child: const Text('−10 XP'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildWeatherSection(WeatherProvider weather) {
+    return switch (weather.status) {
+      WeatherStatus.idle ||
+      WeatherStatus.loading =>
+        const Padding(
+          padding: EdgeInsets.all(16),
+          child: CircularProgressIndicator(),
+        ),
+      WeatherStatus.error => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Sol lives here ☀️ — coming soon'),
-            const SizedBox(height: 32),
-            Consumer<WeatherProvider>(
-              builder: (context, weather, _) {
-                return switch (weather.status) {
-                  WeatherStatus.idle ||
-                  WeatherStatus.loading =>
-                    const CircularProgressIndicator(),
-                  WeatherStatus.error => Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          weather.errorMessage ?? 'Unknown error',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: Colors.red),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 12),
-                        FilledButton.icon(
-                          onPressed: weather.loadWeather,
-                          icon: const Icon(Icons.refresh),
-                          label: const Text('Retry'),
-                        ),
-                      ],
-                    ),
-                  WeatherStatus.success => _WeatherCard(weather: weather),
-                };
-              },
+            Text(
+              weather.errorMessage ?? 'Unknown error',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: Colors.red),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              onPressed: weather.loadWeather,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Retry'),
             ),
           ],
         ),
-      ),
-    );
+      WeatherStatus.success => _WeatherCard(weather: weather),
+    };
   }
 }
 

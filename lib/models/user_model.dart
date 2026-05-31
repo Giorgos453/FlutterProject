@@ -1,3 +1,4 @@
+import '../core/constants.dart';
 import 'sol_stage.dart';
 
 /// Immutable user profile for SolBuddy.
@@ -16,8 +17,18 @@ class SolUser {
   final Set<String> visitedSpotIds;
   final int quizzesPlayed;
 
-  /// Current avatar stage derived from XP.
+  /// Current avatar stage derived from stored XP (no temp penalty).
   SolStage get solStage => SolStage.fromValue(xp);
+
+  /// Effective state value after applying the live temperature penalty.
+  int effectiveStateValue(double currentTemp) {
+    final value = xp - tempPenalty(currentTemp);
+    return value < 0 ? 0 : value;
+  }
+
+  /// Avatar stage reflecting stored XP minus the current temp penalty.
+  SolStage stageFor(double currentTemp) =>
+      SolStage.fromValue(effectiveStateValue(currentTemp));
 
   SolUser copyWith({
     int? xp,

@@ -36,6 +36,30 @@ class StageThreshold {
   static const int radiant = 100;
 }
 
+/// Display-only XP penalty per heat level (not persisted).
+class TempDisplayPenalty {
+  const TempDisplayPenalty._();
+
+  static const int comfortable = 0;
+  static const int warm = 5;
+  static const int hot = 15;
+  static const int extreme = 30;
+}
+
+/// Returns the display XP penalty for a given temperature in °C.
+int tempPenalty(double temp) {
+  if (temp >= TemperatureThreshold.extremeThreshold) {
+    return TempDisplayPenalty.extreme;
+  }
+  if (temp >= TemperatureThreshold.hotThreshold) {
+    return TempDisplayPenalty.hot;
+  }
+  if (temp >= TemperatureThreshold.warmThreshold) {
+    return TempDisplayPenalty.warm;
+  }
+  return TempDisplayPenalty.comfortable;
+}
+
 enum CoolSpotType { fountain, shade, acBuilding, park }
 
 class CoolSpot {
