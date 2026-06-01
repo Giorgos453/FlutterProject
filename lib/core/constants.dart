@@ -1,3 +1,4 @@
+import '../models/cool_spot.dart';
 import '../models/district.dart';
 
 /// Central app constants — no magic numbers elsewhere.
@@ -74,78 +75,72 @@ const List<District> madridDistricts = [
   District(name: 'Latina', lat: 40.4020, lng: -3.7400),
 ];
 
-enum CoolSpotType { fountain, shade, acBuilding, park }
-
-class CoolSpot {
-  const CoolSpot({
-    required this.name,
-    required this.type,
-    required this.lat,
-    required this.lng,
-  });
-
-  final String name;
-  final CoolSpotType type;
-  final double lat;
-  final double lng;
-}
-
 const List<CoolSpot> coolSpots = [
   CoolSpot(
+    id: 'retiro',
     name: 'Parque del Retiro',
     type: CoolSpotType.park,
     lat: 40.4153,
     lng: -3.6844,
   ),
   CoolSpot(
+    id: 'cibeles',
     name: 'Fuente de Cibeles',
     type: CoolSpotType.fountain,
     lat: 40.4193,
     lng: -3.6936,
   ),
   CoolSpot(
+    id: 'debod',
     name: 'Templo de Debod',
     type: CoolSpotType.park,
     lat: 40.4240,
     lng: -3.7176,
   ),
   CoolSpot(
+    id: 'madrid-rio',
     name: 'Madrid Río',
     type: CoolSpotType.park,
     lat: 40.3936,
     lng: -3.7186,
   ),
   CoolSpot(
+    id: 'botanico',
     name: 'Jardín Botánico',
     type: CoolSpotType.shade,
     lat: 40.4110,
     lng: -3.6906,
   ),
   CoolSpot(
+    id: 'oeste',
     name: 'Parque del Oeste',
     type: CoolSpotType.park,
     lat: 40.4290,
     lng: -3.7200,
   ),
   CoolSpot(
+    id: 'estanque',
     name: 'Estanque del Retiro',
     type: CoolSpotType.fountain,
     lat: 40.4170,
     lng: -3.6824,
   ),
   CoolSpot(
+    id: 'caixaforum',
     name: 'CaixaForum',
     type: CoolSpotType.acBuilding,
     lat: 40.4112,
     lng: -3.6936,
   ),
   CoolSpot(
+    id: 'san-miguel',
     name: 'Mercado de San Miguel',
     type: CoolSpotType.acBuilding,
     lat: 40.4154,
     lng: -3.7090,
   ),
   CoolSpot(
+    id: 'corte-ingles',
     name: 'El Corte Inglés Callao',
     type: CoolSpotType.acBuilding,
     lat: 40.4200,
