@@ -1,6 +1,9 @@
 import '../models/cool_spot.dart';
 import '../models/district.dart';
 
+/// Shared screen padding for consistent insets across all screens.
+const double kScreenPadding = 16.0;
+
 /// Central app constants — no magic numbers elsewhere.
 class XpReward {
   const XpReward._();

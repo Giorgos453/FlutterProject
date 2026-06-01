@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "989085873570",
+    "project_id": "solbuddy-madrid",
+    "storage_bucket": "solbuddy-madrid.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:989085873570:android:47caf8502f71852e5f2efb",
+        "android_client_info": {
+          "package_name": "com.example.flutter_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKKC67OgQfX6sEFP_q5kvepqFBa7bHCpQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

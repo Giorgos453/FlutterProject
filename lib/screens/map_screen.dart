@@ -3,8 +3,10 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
+import '../core/constants.dart';
 import '../models/district_weather.dart';
 import '../providers/map_provider.dart';
+import '../widgets/state_views.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -19,9 +21,17 @@ class _MapScreenState extends State<MapScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final mapProv = context.read<MapProvider>();
-      mapProv.loadDistrictWeather();
+      if (mapProv.status == MapStatus.idle) {
+        mapProv.loadDistrictWeather();
+      }
       mapProv.loadUserLocation();
     });
+  }
+
+  Future<void> _onRefresh() async {
+    final mapProv = context.read<MapProvider>();
+    await mapProv.loadDistrictWeather();
+    mapProv.loadUserLocation();
   }
 
   @override
@@ -32,38 +42,51 @@ class _MapScreenState extends State<MapScreen> {
         builder: (context, mapProv, _) {
           return Stack(
             children: [
-              FlutterMap(
-                options: const MapOptions(
-                  initialCenter: LatLng(40.4168, -3.7038),
-                  initialZoom: 12,
+              RefreshIndicator(
+                onRefresh: _onRefresh,
+                child: Stack(
+                  children: [
+                    // ScrollView overlay so RefreshIndicator can trigger
+                    Positioned.fill(
+                      child: FlutterMap(
+                        options: const MapOptions(
+                          initialCenter: LatLng(40.4168, -3.7038),
+                          initialZoom: 12,
+                        ),
+                        children: [
+                          TileLayer(
+                            urlTemplate:
+                                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            userAgentPackageName: 'com.solbuddy.madrid',
+                          ),
+                          if (mapProv.status == MapStatus.success)
+                            MarkerLayer(markers: _buildMarkers(mapProv)),
+                          const RichAttributionWidget(
+                            attributions: [
+                              TextSourceAttribution(
+                                  'OpenStreetMap contributors'),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Transparent list so pull-to-refresh works on map
+                    ListView(),
+                  ],
                 ),
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'com.solbuddy.madrid',
-                  ),
-                  if (mapProv.status == MapStatus.success)
-                    MarkerLayer(markers: _buildMarkers(mapProv)),
-                  const RichAttributionWidget(
-                    attributions: [
-                      TextSourceAttribution('OpenStreetMap contributors'),
-                    ],
-                  ),
-                ],
               ),
               if (mapProv.status == MapStatus.loading)
                 const Positioned.fill(
                   child: ColoredBox(
                     color: Color(0x40000000),
-                    child: Center(child: CircularProgressIndicator()),
+                    child: LoadingView(),
                   ),
                 ),
               if (mapProv.status == MapStatus.error)
                 Positioned(
-                  top: 16,
-                  left: 16,
-                  right: 16,
+                  top: kScreenPadding,
+                  left: kScreenPadding,
+                  right: kScreenPadding,
                   child: Card(
                     color: Theme.of(context).colorScheme.errorContainer,
                     child: Padding(
@@ -72,13 +95,38 @@ class _MapScreenState extends State<MapScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            mapProv.errorMessage ?? 'Unknown error',
+                            mapProv.errorMessage ?? 'Could not load map data',
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 8),
                           FilledButton.tonal(
                             onPressed: mapProv.loadDistrictWeather,
                             child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              if (mapProv.status == MapStatus.success &&
+                  mapProv.userPosition == null)
+                Positioned(
+                  bottom: kScreenPadding,
+                  left: kScreenPadding,
+                  right: kScreenPadding,
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      child: Row(
+                        children: [
+                          Icon(Icons.location_off,
+                              size: 18,
+                              color: Theme.of(context).colorScheme.outline),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Location not available',
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
                       ),

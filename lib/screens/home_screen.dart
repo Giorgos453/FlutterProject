@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../core/constants.dart';
 import '../providers/user_provider.dart';
 import '../providers/weather_provider.dart';
 import '../widgets/sol_avatar.dart';
 import '../widgets/stat_card.dart';
+import '../widgets/state_views.dart';
 import '../widgets/xp_bar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,9 +21,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<WeatherProvider>().loadWeather();
+      final weather = context.read<WeatherProvider>();
+      if (weather.data == null) weather.loadWeather();
     });
   }
+
+  Future<void> _onRefresh() =>
+      context.read<WeatherProvider>().loadWeather();
 
   @override
   Widget build(BuildContext context) {
@@ -35,22 +41,28 @@ class _HomeScreenState extends State<HomeScreen> {
           final effectiveXp =
               temp != null ? user.effectiveStateValue(temp) : user.xp;
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-            child: Column(
+          return RefreshIndicator(
+            onRefresh: _onRefresh,
+            child: ListView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: kScreenPadding,
+                vertical: 24,
+              ),
               children: [
-                SolAvatar(stage: stage, size: 160),
+                Center(child: SolAvatar(stage: stage, size: 160)),
                 const SizedBox(height: 12),
-                Text(
-                  stage.name.toUpperCase(),
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                Center(
+                  child: Text(
+                    stage.name.toUpperCase(),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: kScreenPadding),
                   child: XpBar(xp: effectiveXp, stage: stage),
                 ),
                 const SizedBox(height: 20),
@@ -83,22 +95,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 24),
                 _buildWeatherSection(weatherProv),
-                const SizedBox(height: 16),
-                // TODO: remove (debug)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    FilledButton.tonal(
-                      onPressed: () => userProv.addXp(10),
-                      child: const Text('+10 XP'),
-                    ),
-                    const SizedBox(width: 12),
-                    FilledButton.tonal(
-                      onPressed: () => userProv.addXp(-10),
-                      child: const Text('−10 XP'),
-                    ),
-                  ],
-                ),
               ],
             ),
           );
@@ -112,27 +108,12 @@ class _HomeScreenState extends State<HomeScreen> {
       WeatherStatus.idle ||
       WeatherStatus.loading =>
         const Padding(
-          padding: EdgeInsets.all(16),
-          child: CircularProgressIndicator(),
+          padding: EdgeInsets.all(kScreenPadding),
+          child: LoadingView(message: 'Loading weather…'),
         ),
-      WeatherStatus.error => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              weather.errorMessage ?? 'Unknown error',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: Colors.red),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-            FilledButton.icon(
-              onPressed: weather.loadWeather,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
-            ),
-          ],
+      WeatherStatus.error => ErrorView(
+          message: weather.errorMessage ?? 'Could not load weather',
+          onRetry: weather.loadWeather,
         ),
       WeatherStatus.success => _WeatherCard(weather: weather),
     };
@@ -152,7 +133,7 @@ class _WeatherCard extends StatelessWidget {
     return Card(
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: kScreenPadding),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

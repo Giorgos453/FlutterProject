@@ -7,6 +7,7 @@ import '../core/constants.dart';
 import '../core/quiz_questions.dart';
 import '../models/quiz_question.dart';
 import '../providers/user_provider.dart';
+import '../widgets/state_views.dart';
 
 enum _Phase { start, question, result }
 
@@ -30,8 +31,8 @@ class _QuizScreenState extends State<QuizScreen> {
 
   // ── Session lifecycle ─────────────────────────────────────────────
 
-  // TODO Phase 7: daily limit
   void _startSession() {
+    if (context.read<UserProvider>().quizPlayedToday) return;
     final picked = _pickQuestions();
     setState(() {
       _phase = _Phase.question;
@@ -104,9 +105,18 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Widget _buildStart() {
+    final playedToday = context.watch<UserProvider>().quizPlayedToday;
+
+    if (playedToday) {
+      return const EmptyView(
+        icon: Icons.timer_outlined,
+        message: 'Heute schon gespielt — morgen wieder!',
+      );
+    }
+
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
+        padding: const EdgeInsets.symmetric(horizontal: kScreenPadding * 2),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -142,7 +152,7 @@ class _QuizScreenState extends State<QuizScreen> {
 
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(kScreenPadding + 4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -273,10 +283,10 @@ class _QuizScreenState extends State<QuizScreen> {
               const Text('Perfect bonus included!'),
             ],
             const SizedBox(height: 32),
-            FilledButton.icon(
-              onPressed: _startSession,
-              icon: const Icon(Icons.replay_rounded),
-              label: const Text('Play Again'),
+            Text(
+              'Heute schon gespielt — morgen wieder!',
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center,
             ),
           ],
         ),

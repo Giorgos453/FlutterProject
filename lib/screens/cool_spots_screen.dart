@@ -77,7 +77,7 @@ class _CoolSpotListView extends StatelessWidget {
       selector: (_, p) => p.user.visitedSpotIds,
       builder: (context, visitedIds, _) {
         return ListView.separated(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
           itemCount: coolSpots.length,
           separatorBuilder: (_, _) => const Divider(height: 1),
           itemBuilder: (context, index) {
