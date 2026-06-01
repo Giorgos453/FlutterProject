@@ -26,6 +26,21 @@ class UserProvider extends ChangeNotifier {
   /// Awards the bonus XP for a perfect quiz.
   void onQuizPerfect() => addXp(XpReward.quizPerfect);
 
+  /// Scores a completed quiz session.
+  ///
+  /// Awards [XpReward.quizCorrect] per correct answer and an additional
+  /// [XpReward.quizPerfect] bonus when all answers are correct.
+  void submitQuizResult(int correctCount, int totalCount) {
+    for (var i = 0; i < correctCount; i++) {
+      onQuizCorrect();
+    }
+    if (correctCount == totalCount) {
+      onQuizPerfect();
+    }
+    _user = _user.copyWith(quizzesPlayed: _user.quizzesPlayed + 1);
+    notifyListeners();
+  }
+
   /// Checks in at [spotId]. Returns `true` if this is a new visit.
   bool onCoolSpotCheckIn(String spotId) {
     if (_user.visitedSpotIds.contains(spotId)) return false;
