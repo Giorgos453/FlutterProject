@@ -110,7 +110,7 @@ class _QuizScreenState extends State<QuizScreen> {
     if (playedToday) {
       return const EmptyView(
         icon: Icons.timer_outlined,
-        message: 'Heute schon gespielt — morgen wieder!',
+        message: 'Already played today — come back tomorrow!',
       );
     }
 
@@ -284,7 +284,7 @@ class _QuizScreenState extends State<QuizScreen> {
             ],
             const SizedBox(height: 32),
             Text(
-              'Heute schon gespielt — morgen wieder!',
+              'Already played today — come back tomorrow!',
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),

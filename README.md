@@ -109,31 +109,37 @@ SolBuddy implements all three Climate Cube dimensions in a single, integrated ex
 
 The main hub: Sol avatar status, XP and streak stats, and quick-access tiles to every feature.
 
-*(Screenshots coming soon)*
+<img src="startscreen.png" width="250" alt="Home screen with Sol avatar">
+
+### Cool Spots
+
+All discoverable Madrid cool refuges in a list, each with a one-time check-in reward.
+
+<img src="coolspots.png" width="250" alt="Cool spots list">
 
 ### Map & District Heat
 
 Interactive map of Madrid showing all 10 discoverable cool spots and a per-district temperature overview.
 
-*(Screenshots coming soon)*
+<img src="heatmap.png" width="250" alt="District heat map">
 
 ### Eco Quiz
 
 Questions across the three Climate Cube categories — one scored session per day.
 
-*(Screenshots coming soon)*
+<img src="quiz.png" width="250" alt="Eco quiz">
 
 ### Leaderboard
 
 Live, Firestore-synced global ranking ordered by total XP.
 
-*(Screenshots coming soon)*
+<img src="profile.png" width="250" alt="Leaderboard">
 
 ### Profile
 
 Manage your username and track your personal stats.
 
-*(Screenshots coming soon)*
+<img src="profile.png" width="250" alt="Profile screen">
 
 ---
 
@@ -200,7 +206,7 @@ Manage your username and track your personal stats.
 
 ## Demo Video
 
-*(Demo video coming soon)*
+*https://upm365.sharepoint.com/sites/KotlinProject/_layouts/15/stream.aspx?id=%2Fsites%2FKotlinProject%2FFreigegebene%20Dokumente%2FFinal%5FDemo%2Emov&referrer=StreamWebApp%2EWeb&referrerScenario=AddressBarCopied%2Eview%2E14b28ff2%2Dff8c%2D48bb%2Da1b9%2D5c745c0be867*
 
 ---
 
